@@ -1,5 +1,4 @@
 from mcp.server.fastmcp import FastMCP, Context
-from mcp.server.fastmcp.prompts.base import UserMessage, AssistantMessage, SystemMessage
 
 import can
 import time
@@ -156,8 +155,14 @@ def dbc_info() -> dict:
     Loads the vehicle DBC file and extracts its most useful information.
 
     Returns:
-        A dictionary containing structured information about the DBC file,
-        or None if the file could not be loaded.
+        A dictionary containing structured information about the DBC file, including:
+            - Version
+            - Nodes
+            - Messages with their signals, comments, and attributes
+            - Signal groups
+            - Buses
+            - Value tables
+        Returns None if the file could not be loaded.
     """
     info = {}
 
