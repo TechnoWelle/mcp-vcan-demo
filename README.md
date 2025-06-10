@@ -25,6 +25,7 @@ This setup is ideal for learning, prototyping, or testing automotive CAN workflo
 - [`vehicle.dbc`](vehicle.dbc): CAN database file describing messages and signals.
 - [`setup-vcan.sh`](setup-vcan.sh): Script to set up the vCAN interface on Linux.
 - [`requirements.txt`](requirements.txt): Python dependencies.
+- [`Dockerfile`](Dockerfile): Docker configuration for running the MCP server and ECU simulator.
 
 ## Getting Started
 
@@ -33,6 +34,7 @@ This setup is ideal for learning, prototyping, or testing automotive CAN workflo
 - Linux system (for vCAN; Raspberry Pi recommended)
 - Python 3.8+
 - Docker (optional, for containerized setup)
+- vCAN kernel module (see [VCAN-KERNEL.md](VCAN-KERNEL.md) for instructions on enabling vCAN support)
 
 ### 1. Set Up vCAN Interface
 
@@ -68,6 +70,28 @@ python3 can-mcp.py
 
 The server will listen for MCP requests (default port: 6278).
 
+### 5. Run Using Docker
+
+To simplify setup, you can use Docker to run the MCP server and ECU simulator. Ensure Docker is installed on your system.
+
+#### Build the Docker Image
+
+Run the following command to build the Docker image:
+
+```bash
+docker build -t mcp-vcan-demo .
+```
+
+#### Start the Container
+
+Run the container using the following command:
+
+```bash
+docker run -d --name mcp-server --privileged   -p 6278:6278 -p 5000:5000 -p 8080:8080   mcp-demo
+```
+
+This will start the MCP server and ECU simulator inside the container. The MCP server will be accessible on port `6278`.
+
 ## How It Works
 
 - The simulator sends CAN messages (ENGINE_STATUS, ABS_STATUS, etc.) on the virtual CAN bus.
@@ -79,7 +103,7 @@ The server will listen for MCP requests (default port: 6278).
 - You can do this by specifying the MCP server's IP address and port in the MCP host configuration.
 - The MCP host will then be able to send requests to the MCP server and receive responses.
 
-- Example: Adding the MCP server to windsurf:
+- Example: Adding the MCP server to windsurf (Can use VS Code in agentic mode):
     - In the windsurf configuration file:
     ```json
     {
@@ -90,6 +114,7 @@ The server will listen for MCP requests (default port: 6278).
         }
     }
     ```
+     `Replace <PI's IP>` with the actual IP address of your Raspberry Pi or Linux system running the MCP server.
 ![can-mcp-server on windsurf](./docs/images/Windsurf-MCPservers.png)
 
 ## Example User Prompts
